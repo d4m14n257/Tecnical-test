@@ -11,6 +11,8 @@ export async function getLogin(user : string, password : string) {
         body: JSON.stringify({Body: {Username: user, Password: password}})
     }).then((response) => {
         return response.json();
+    }).catch((err) => {
+        console.log(err)
     })
 
     return response;

@@ -24,7 +24,7 @@ export default function App({ Component, pageProps }: AppProps) {
 						flexDirection: 'column',
 						justifyContent: 'center',
 						alignItems: 'center',
-						height: '100vh'
+						margin: 4
 					}}
 				>
 					<Component {...pageProps} />

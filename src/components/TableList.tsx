@@ -1,4 +1,4 @@
-import { Button, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { Button, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import { columns } from "@/constants/constants";
 import { getSearchUser } from "@/api/search";
@@ -18,6 +18,7 @@ export default function TableList() {
         const response = await getSearchUser(token, userSearch);
         
         if(!response.IsOK || !response.Body) {
+            setList([]);
             setMessage(response.Messages);
             setError(true);
             return;
@@ -26,7 +27,6 @@ export default function TableList() {
         setList(response.Body);
         setError(false);
         setMessage('');
-        
 	}
 
     const handleCreateUser = () => {
@@ -34,20 +34,41 @@ export default function TableList() {
     }
 
 	return (
-		<>
-            <Stack flexDirection='row' spacing={4} alignContent='center' justifyContent='space-between' justifyItems='center'>
-                <Box>
+		<TableContainer 
+            component={Paper}
+            sx={{
+                padding: 5
+            }}
+        >
+            <Stack 
+                direction='row'
+                spacing={4}
+                justifyContent="space-between"
+                alignItems="center"
+            >
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: 5
+                    }}
+                >
                     <TextField 
+                        label='Buscador'
                         value={userSearch}
                         onChange={(e) => setUserSearch(e.target.value)}
                     />
                     <Button
+                        variant='outlined'
                         onClick={() => {handleSearchUser()}}
                     >
                         OK
                     </Button>
                 </Box>
                 <Button
+                    variant='outlined'
                     onClick={() => {handleCreateUser()}}
                 >
                     Nuevo Usuario
@@ -66,7 +87,7 @@ export default function TableList() {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-                    {list.length > 0 ? 
+                    {list.length > 0 && 
                         list.map((item) => (
                             <TableRow
                                 key={item.Id}
@@ -78,13 +99,32 @@ export default function TableList() {
                                 <TableCell>{item.Email}</TableCell>
                                 <TableCell>{item.PhoneNumber}</TableCell>
                             </TableRow>
-                        )) :
-                        <Typography variant="h4" color={error ? 'error' : ''}>
-                            {error ? `Ocurrio un error en la peticion:  ${message}`: 'No hay datos por mostrar'}
-                        </Typography>
-                    }
+                        ))}
 				</TableBody>
 			</Table>
-		</>
+            {list.length <= 0 &&
+                <Typography 
+                    sx={{
+                        textAlign: 'center',
+                        marginTop: 5
+                    }}
+                    variant="h4" 
+                >
+                    No hay datos por mostrar
+                </Typography>
+            }
+            {error && 
+                <Typography 
+                    sx={{
+                        textAlign: 'center',
+                        marginTop: 5
+                    }}
+                    variant="h5" 
+                    color='error'
+                >
+                    Oucrrio un error: {message}
+                </Typography>
+            }
+        </TableContainer>
 	);
 }
